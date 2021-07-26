@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace TestApp.Models.Interfaces
 {
-    interface IEvent : IAnswer
+    public interface IEvent
     {
         enum AnswerEventTypeEnum
         {

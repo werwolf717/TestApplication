@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace TestApp.Models.Interfaces
 {
-    interface IAttachment : IAnswer
+    public interface IAttachment : IAnswer
     {
         [Required]
         public string FileName { get; set; }

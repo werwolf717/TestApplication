@@ -5,6 +5,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Azure.Storage.Blobs;
+using TestApp.Models;
+using Microsoft.AspNetCore.Http;
 
 namespace TestApp.Controllers
 {
@@ -22,7 +24,7 @@ namespace TestApp.Controllers
         }
 
         [HttpPost]
-        public string Attachments(Guid answerId)
+        public string Attachments(Guid answerId, IEnumerable<IFormFile> fileList)
         {
             BlobContainerClient blobContainerClient = new BlobContainerClient("UseDevelopmentStorage=true", "sample-container");
             blobContainerClient.CreateIfNotExists();
@@ -30,11 +32,11 @@ namespace TestApp.Controllers
         }
 
         [HttpPost]
-        public string Events(Guid answerId, Dictionary<string, string> data)
+        public IActionResult Events(Guid answerId, EventModel data)
         {
 
-            return "Test";
-
+            TestApp.Classes.cSqlServer.WriteEvents(data);
+            return Ok();
         }
 
     }
