@@ -4,6 +4,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Azure.Storage.Blobs;
 
 namespace TestApp.Controllers
 {
@@ -20,18 +21,19 @@ namespace TestApp.Controllers
             _logger = logger;
         }
 
-        [HttpGet]
+        [HttpPost]
         public string Attachments(Guid answerId)
         {
+            BlobContainerClient blobContainerClient = new BlobContainerClient("UseDevelopmentStorage=true", "sample-container");
+            blobContainerClient.CreateIfNotExists();
             return "Test!";
         }
 
         [HttpPost]
-        public string Events(Guid answerId, [FromForm] Dictionary<string, string> AnswerEvents)
+        public string Events(Guid answerId, Dictionary<string, string> data)
         {
 
-            
-            return "Test!";
+            return "Test";
 
         }
 
