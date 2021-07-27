@@ -8,7 +8,7 @@ using TestApp.Models.Interfaces;
 
 namespace TestApp.Classes
 {
-    public class cSqlServer
+    public class SqlServer
     {
 
         public static string connectionString;

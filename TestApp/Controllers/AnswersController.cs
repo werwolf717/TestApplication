@@ -9,6 +9,7 @@ using TestApp.Models;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Options;
 using Microsoft.Extensions.Configuration;
+using System.IO;
 
 namespace TestApp.Controllers
 {
@@ -27,18 +28,31 @@ namespace TestApp.Controllers
         }
 
         [HttpPost]
-        public string Attachments(Guid answerId, IEnumerable<IFormFile> fileList)
+        public async Task<IActionResult> Attachments(Guid answerId, IEnumerable<IFormFile> File)
         {
-            BlobContainerClient blobContainerClient = new BlobContainerClient("UseDevelopmentStorage=true", "sample-container");
-            blobContainerClient.CreateIfNotExists();
-            return "Test!";
+            try
+            {
+                BlobContainerClient blobContainerClient = new BlobContainerClient("UseDevelopmentStorage=true", "answers-container");
+                blobContainerClient.CreateIfNotExists();
+
+                foreach(IFormFile _file in File)
+                {
+                    await blobContainerClient.UploadBlobAsync(_file.FileName, _file.OpenReadStream());
+                }
+            }
+            catch(Exception ex)
+            {
+                logger.Log(LogLevel.Error, "Blob upload error!");
+            }
+
+            return Ok();
         }
 
         [HttpPost]
         public IActionResult Events(Guid answerId, EventModel data)
         {
-            Classes.cSqlServer.connectionString = config.GetConnectionString("answersConnection");
-            Classes.cSqlServer.WriteEvents(data, answerId);
+            Classes.SqlServer.connectionString = config.GetConnectionString("answersConnection");
+            Classes.SqlServer.WriteEvents(data, answerId);
             return Ok();
         }
 
