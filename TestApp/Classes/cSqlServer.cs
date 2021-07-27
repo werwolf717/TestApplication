@@ -10,12 +10,23 @@ namespace TestApp.Classes
 {
     public class cSqlServer
     {
-        public static void WriteEvents(IEvent answer)
+
+        public static string connectionString;
+        public static void WriteEvents(IEvent answer, Guid _answerid)
         {
-            using (TestConn db = new TestConn())
+            using (AnswersContext db = new AnswersContext(connectionString))
             {
-                AnswerEventDD answerDB = new(new Guid(), new Guid(), DateTime.Now, answer.Value, answer.Type, answer.ClientTime);
-                db.Answers.Add(answerDB);
+                AnswerEvent answerDB = new(Guid.NewGuid(), _answerid, DateTime.Now, answer);
+                db.Event.Add(answerDB);
+                db.SaveChanges();
+            }
+        }
+        public static void WriteAttachment(IAttachment _attachment, Guid _answerid)
+        {
+            using (AnswersContext db = new AnswersContext(connectionString))
+            {
+                AnswerAttachment answerDB = new(Guid.NewGuid(), _answerid, DateTime.Now, _attachment);
+                db.Attachment.Add(answerDB);
                 db.SaveChanges();
             }
         }

@@ -6,18 +6,8 @@ using TestApp.Models.Interfaces;
 
 namespace TestApp.Models.DB
 {
-    public class AnswerEventDD : IAnswer, IEvent
+    public class AnswerEvent : IAnswer, IEvent
     {
-
-        public AnswerEventDD(Guid guid1, Guid guid2, DateTime now, string value, IEvent.AnswerEventTypeEnum type, DateTime clientTime)
-        {
-            Id = guid1;
-            AnswerId = guid2;
-            Created = now;
-            Value = value;
-            Type = type;
-            ClientTime = clientTime;
-        }
 
         public Guid Id { get; set; }
         public Guid AnswerId { get; set; }
@@ -25,5 +15,15 @@ namespace TestApp.Models.DB
         public string Value { get; set; }
         public IEvent.AnswerEventTypeEnum Type { get; set; }
         public DateTime ClientTime { get; set; }
+
+        public AnswerEvent(Guid guid1, Guid guid2, DateTime now, IEvent answer)
+        {
+            Id = guid1;
+            AnswerId = guid2;
+            Created = now;
+            Value = answer.Value;
+            Type = answer.Type;
+            ClientTime = answer.ClientTime;
+        }
     }
 }

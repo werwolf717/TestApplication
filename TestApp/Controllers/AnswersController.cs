@@ -7,6 +7,8 @@ using System.Threading.Tasks;
 using Azure.Storage.Blobs;
 using TestApp.Models;
 using Microsoft.AspNetCore.Http;
+using Microsoft.Extensions.Options;
+using Microsoft.Extensions.Configuration;
 
 namespace TestApp.Controllers
 {
@@ -15,12 +17,13 @@ namespace TestApp.Controllers
     public class AnswersController : ControllerBase
     {
 
-        private readonly ILogger<AnswersController> _logger;
-        public Dictionary<string, string> AnswerEvents;
+        private readonly ILogger<AnswersController> logger;
+        private readonly IConfiguration config;
 
-        public AnswersController(ILogger<AnswersController> logger)
+        public AnswersController(ILogger<AnswersController> _logger, IConfiguration _config)
         {
-            _logger = logger;
+            logger = _logger;
+            config = _config;
         }
 
         [HttpPost]
@@ -34,8 +37,8 @@ namespace TestApp.Controllers
         [HttpPost]
         public IActionResult Events(Guid answerId, EventModel data)
         {
-
-            TestApp.Classes.cSqlServer.WriteEvents(data);
+            Classes.cSqlServer.connectionString = config.GetConnectionString("answersConnection");
+            Classes.cSqlServer.WriteEvents(data, answerId);
             return Ok();
         }
 

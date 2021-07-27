@@ -26,6 +26,7 @@ namespace TestApp
         {
 
             services.AddControllers();
+           // services.Configure<IConfiguration>(Configuration);
 
         }
 
@@ -40,6 +41,8 @@ namespace TestApp
             app.UseHttpsRedirection();
 
             app.UseRouting();
+
+            var ttt = Configuration.GetConnectionString("answersConnection");
 
             app.UseEndpoints(endpoints =>
             {
