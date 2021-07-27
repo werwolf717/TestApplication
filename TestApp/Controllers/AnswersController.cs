@@ -33,10 +33,14 @@ namespace TestApp.Controllers
             try
             {
                 BlobContainerClient blobContainerClient = new BlobContainerClient("UseDevelopmentStorage=true", "answers-container");
+                Classes.SqlServer.connectionString = config.GetConnectionString("answersConnection");
+
                 blobContainerClient.CreateIfNotExists();
 
                 foreach(IFormFile _file in File)
                 {
+                    Classes.SqlServer.WriteAttachment(new AttachmentModel(_file.Name, "", _file.Length), answerId);
+
                     await blobContainerClient.UploadBlobAsync(_file.FileName, _file.OpenReadStream());
                 }
             }
