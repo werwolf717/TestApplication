@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using System.Data.SqlClient;
 using TestApp.Models.DB;
 using TestApp.Models.Interfaces;
+using TestApp.Models;
 
 namespace TestApp.Classes
 {
@@ -12,13 +13,15 @@ namespace TestApp.Classes
     {
 
         public static string connectionString;
-        public static void WriteEvents(IEvent answer, Guid _answerid)
+        public static void WriteEvents(IEnumerable<IEvent> answer, Guid _answerid)
         {
             using (AnswersContext db = new AnswersContext(connectionString))
             {
-                AnswerEvent answerDB = new(Guid.NewGuid(), _answerid, DateTime.Now, answer);
-                db.Event.Add(answerDB);
-                db.SaveChanges();
+                foreach (IEvent _event in answer)
+                {
+                    db.Event.Add(new(Guid.NewGuid(), _answerid, DateTime.Now, _event));
+                    db.SaveChanges();
+                }
             }
         }
         public static void WriteAttachment(IAttachment _attachment, Guid _answerid)

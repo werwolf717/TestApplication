@@ -5,6 +5,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
+using Microsoft.OpenApi.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -26,7 +27,10 @@ namespace TestApp
         {
 
             services.AddControllers();
-           // services.Configure<IConfiguration>(Configuration);
+            services.AddSwaggerGen(c =>
+            {
+                c.SwaggerDoc("v1", new OpenApiInfo { Title = "WebApplication4", Version = "v1" });
+            });
 
         }
 
@@ -36,13 +40,13 @@ namespace TestApp
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
+                app.UseSwagger();
+                app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "TestApp v1"));
             }
 
             app.UseHttpsRedirection();
 
             app.UseRouting();
-
-            var ttt = Configuration.GetConnectionString("answersConnection");
 
             app.UseEndpoints(endpoints =>
             {

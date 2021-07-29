@@ -6,10 +6,14 @@ using System.Linq;
 using System.Threading.Tasks;
 using Azure.Storage.Blobs;
 using TestApp.Models;
+using TestApp.Classes;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Options;
 using Microsoft.Extensions.Configuration;
 using System.IO;
+using Microsoft.AspNetCore.StaticFiles;
+using MimeMapping;
+using TestApp.Models.Interfaces;
 
 namespace TestApp.Controllers
 {
@@ -25,6 +29,9 @@ namespace TestApp.Controllers
         {
             logger = _logger;
             config = _config;
+            SqlServer.connectionString = config.GetConnectionString("answersConnection");
+            AttachmentWorker.container = config.GetSection("BlobContainers").GetValue<string>("answers");
+            AttachmentWorker.connectionStr = config.GetConnectionString("blobConnection");
         }
 
         [HttpPost]
@@ -32,17 +39,16 @@ namespace TestApp.Controllers
         {
             try
             {
-                BlobContainerClient blobContainerClient = new BlobContainerClient("UseDevelopmentStorage=true", "answers-container");
-                Classes.SqlServer.connectionString = config.GetConnectionString("answersConnection");
+                List<Task> taskList = new List<Task>();
 
-                blobContainerClient.CreateIfNotExists();
-
-                foreach(IFormFile _file in File)
+                foreach (IFormFile _file in File)
                 {
-                    Classes.SqlServer.WriteAttachment(new AttachmentModel(_file.Name, "", _file.Length), answerId);
 
-                    await blobContainerClient.UploadBlobAsync(_file.FileName, _file.OpenReadStream());
+                    taskList.Add(Task.Run(() => AttachmentWorker.LoadFile(answerId, _file)));
+
                 }
+
+                await Task.WhenAll(taskList);
             }
             catch(Exception ex)
             {
@@ -53,10 +59,9 @@ namespace TestApp.Controllers
         }
 
         [HttpPost]
-        public IActionResult Events(Guid answerId, EventModel data)
+        public IActionResult Events(Guid answerId, IEnumerable<EventModel> data)
         {
-            Classes.SqlServer.connectionString = config.GetConnectionString("answersConnection");
-            Classes.SqlServer.WriteEvents(data, answerId);
+            SqlServer.WriteEvents(data, answerId);
             return Ok();
         }
 
