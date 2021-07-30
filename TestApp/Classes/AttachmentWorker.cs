@@ -12,15 +12,20 @@ namespace TestApp.Classes
 {
     public class AttachmentWorker
     {
-        public static string container;
-        public static string connectionStr;
-        public static void LoadFile(Guid answerId, IFormFile _file)
+        public static async Task LoadFile(Guid answerId, IFormFile _file, IConfiguration config)
         {
 
-            BlobContainerClient blobContainerClient = new BlobContainerClient(AttachmentWorker.connectionStr, AttachmentWorker.container);
-            blobContainerClient.CreateIfNotExists();
-            blobContainerClient.UploadBlob(_file.FileName, _file.OpenReadStream());
-            SqlServer.WriteAttachment(new AttachmentModel(_file.FileName, MimeUtility.GetMimeMapping(_file.FileName) ?? MimeUtility.UnknownMimeType, _file.Length), answerId);
+            try
+            {
+                BlobContainerClient blobContainerClient = new BlobContainerClient(config.GetConnectionString("blobConnection"), config.GetSection("BlobContainers").GetValue<string>("answers"));
+                blobContainerClient.CreateIfNotExists();
+                await blobContainerClient.UploadBlobAsync(_file.FileName, _file.OpenReadStream());
+                SqlServer.WriteAttachment(new AttachmentModel(_file.FileName, MimeUtility.GetMimeMapping(_file.FileName) ?? MimeUtility.UnknownMimeType, _file.Length), answerId, config);
+            }
+            catch(Exception ex)
+            {
+                throw new Exception(_file.FileName, ex);
+            }
 
         }
     }

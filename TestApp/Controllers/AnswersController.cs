@@ -29,39 +29,55 @@ namespace TestApp.Controllers
         {
             logger = _logger;
             config = _config;
-            SqlServer.connectionString = config.GetConnectionString("answersConnection");
-            AttachmentWorker.container = config.GetSection("BlobContainers").GetValue<string>("answers");
-            AttachmentWorker.connectionStr = config.GetConnectionString("blobConnection");
         }
 
         [HttpPost]
         public async Task<IActionResult> Attachments(Guid answerId, IEnumerable<IFormFile> File)
         {
+            Task controlAll = null;
+            List<IAttachmentError> errorList = new List<IAttachmentError>();
+            Dictionary<string, List<IAttachmentError>> answer = new Dictionary<string, List<IAttachmentError>>();
+            answer.Add("Errors", null);
             try
             {
                 List<Task> taskList = new List<Task>();
 
                 foreach (IFormFile _file in File)
                 {
-
-                    taskList.Add(Task.Run(() => AttachmentWorker.LoadFile(answerId, _file)));
-
+                    taskList.Add(Task.Run(() => 
+                        AttachmentWorker.LoadFile(answerId, _file, config)));
                 }
 
-                await Task.WhenAll(taskList);
+                controlAll = Task.WhenAll(taskList);
+                await controlAll;
             }
             catch(Exception ex)
             {
-                logger.Log(LogLevel.Error, "Blob upload error!");
+                logger.Log(LogLevel.Error, ex.Message);
+                logger.Log(LogLevel.Error, "Tasks fauled: " + controlAll.IsFaulted);
+
+                foreach(var inEx in controlAll.Exception.InnerExceptions)
+                {
+                    logger.Log(LogLevel.Error, "Error with: " + inEx.Message + "\n" + inEx.InnerException.Message);
+                    errorList.Add(new AttachmentErrorModel(inEx.Message, inEx.InnerException.Message));
+                }
+                answer["Errors"] = errorList;
             }
 
-            return Ok();
+            return Ok(answer);
         }
 
         [HttpPost]
-        public IActionResult Events(Guid answerId, IEnumerable<EventModel> data)
+        public async Task<IActionResult> Events(Guid answerId, IEnumerable<EventModel> data)
         {
-            SqlServer.WriteEvents(data, answerId);
+            try
+            {
+                await SqlServer.WriteEventsAsync(data, answerId, config);
+            }
+            catch(Exception ex)
+            {
+
+            }
             return Ok();
         }
 
