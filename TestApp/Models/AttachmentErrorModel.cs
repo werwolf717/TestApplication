@@ -1,18 +1,14 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using TestApp.Models.Interfaces;
+﻿using TestApp.Models.Interfaces;
 
 namespace TestApp.Models
 {
     public class AttachmentErrorModel : IAttachmentError
     {
-        public string FileName { get; }
+        public string Reason { get; }
         public string Message { get; }
-        public AttachmentErrorModel(string _FileName, string _Message)
+        public AttachmentErrorModel(string _Reason, string _Message)
         {
-            FileName = _FileName;
+            Reason = _Reason;
             Message = _Message;
         }
     }

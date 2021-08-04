@@ -1,11 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Data.Entity;
-using System.Linq;
-using System.Threading.Tasks;
-using System.Data.SqlClient;
+﻿using System.Data.Entity;
 using TestApp.Models.DB;
-using TestApp.Models.Interfaces;
 using Microsoft.Extensions.Configuration;
 using TestApp.Classes.Services;
 

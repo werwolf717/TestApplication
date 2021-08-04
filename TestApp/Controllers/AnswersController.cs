@@ -2,17 +2,10 @@
 using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
-using Azure.Storage.Blobs;
 using TestApp.Models;
-using TestApp.Classes;
 using Microsoft.AspNetCore.Http;
-using Microsoft.Extensions.Options;
 using Microsoft.Extensions.Configuration;
-using System.IO;
-using Microsoft.AspNetCore.StaticFiles;
-using MimeMapping;
 using TestApp.Models.Interfaces;
 using TestApp.Classes.Services;
 
@@ -73,16 +66,20 @@ namespace TestApp.Controllers
         [HttpPost]
         public async Task<IActionResult> Events(Guid answerId, IEnumerable<EventModel> data)
         {
+            Dictionary<string, IAttachmentError> answer = new Dictionary<string, IAttachmentError>();
+            answer.Add("Errors", null);
             try
             {
-                // await SqlServer.WriteEventsAsync(data, answerId, config);
                 await saveContent.SaveDbContent(data, answerId);
             }
             catch(Exception ex)
             {
+                logger.Log(LogLevel.Error, ex.Message);
+                logger.Log(LogLevel.Error, "Error with: " + ex.Message + "\n" + ex.InnerException.Message);
 
+                answer["Errors"] = new AttachmentErrorModel(ex.Message, ex.InnerException.Message);
             }
-            return Ok();
+            return Ok(answer);
         }
 
     }
