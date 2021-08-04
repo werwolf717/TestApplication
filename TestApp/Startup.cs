@@ -36,6 +36,8 @@ namespace TestApp
             });
 
             services.AddTransient<ISaveContentService, SaveContent>();
+            services.AddTransient<AnswersContext>();
+            services.AddTransient<ISaveStorageService, SaveStorage>();
 
         }
 

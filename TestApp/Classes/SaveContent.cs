@@ -1,39 +1,58 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Configuration;
+using MimeMapping;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using TestApp.Classes.Services;
+using TestApp.Models;
 using TestApp.Models.Interfaces;
 
 namespace TestApp.Classes
 {
     public class SaveContent : ISaveContentService
     {
-        public ISaveDbService _saveDb { get; }
-        public ISaveStorageService _saveStorage { get; }
-        public IConfiguration _config { get; }
+        private readonly AnswersContext _saveDb;
 
-        public SaveContent(IConfiguration config, ISaveDbService saveDb)
+        private readonly ISaveStorageService _saveStorage;
+
+        public SaveContent(AnswersContext saveDb, ISaveStorageService saveStorage)
         {
-            _config = config;
             _saveDb = saveDb;
+            _saveStorage = saveStorage;
         }
 
-
-        public void SaveDbContent(IEnumerable<IEvent> answer, Guid _answerid)
+        public async Task SaveDbContent(IEnumerable<IEvent> answer, Guid _answerid)
         {
+            try
+            {
+                foreach (IEvent _event in answer)
+                {
+                    _saveDb.Event.Add(new(Guid.NewGuid(), _answerid, DateTime.Now, _event));
+                }
+                await _saveDb.SaveChangesAsync();
+            }
+            catch(Exception ex)
+            {
+                throw new Exception("SQL Error", ex.InnerException);
+            }
         }
 
-        public void SaveDbContent(IAttachment _attachment, Guid _answerid)
+        public async Task SaveStorageContent(Guid answerId, IFormFile _file)
         {
-            throw new NotImplementedException();
-        }
-
-        public void SaveStorageContent(Guid answerId, IFormFile _file)
-        {
-            throw new NotImplementedException();
+            await _saveStorage.LoadFile(_file);
+            _saveDb.Attachment.Add(new(Guid.NewGuid(), answerId, DateTime.Now, 
+                                    new AttachmentModel(_file.FileName, MimeUtility.GetMimeMapping(_file.FileName) ?? MimeUtility.UnknownMimeType, 
+                                    _file.Length)));
+            try
+            {
+                await _saveDb.SaveChangesAsync();
+            }
+            catch(Exception ex)
+            {
+                throw new Exception("SQL Error", ex.InnerException);
+            }
         }
     }
 }

@@ -48,7 +48,7 @@ namespace TestApp.Controllers
                 foreach (IFormFile _file in File)
                 {
                     taskList.Add(Task.Run(() => 
-                        AttachmentWorker.LoadFile(answerId, _file, config)));
+                        saveContent.SaveStorageContent(answerId, _file)));
                 }
 
                 controlAll = Task.WhenAll(taskList);
@@ -75,7 +75,8 @@ namespace TestApp.Controllers
         {
             try
             {
-                await SqlServer.WriteEventsAsync(data, answerId, config);
+                // await SqlServer.WriteEventsAsync(data, answerId, config);
+                await saveContent.SaveDbContent(data, answerId);
             }
             catch(Exception ex)
             {
