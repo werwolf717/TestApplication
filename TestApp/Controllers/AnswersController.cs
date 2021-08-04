@@ -14,6 +14,7 @@ using System.IO;
 using Microsoft.AspNetCore.StaticFiles;
 using MimeMapping;
 using TestApp.Models.Interfaces;
+using TestApp.Classes.Services;
 
 namespace TestApp.Controllers
 {
@@ -24,11 +25,13 @@ namespace TestApp.Controllers
 
         private readonly ILogger<AnswersController> logger;
         private readonly IConfiguration config;
+        private readonly ISaveContentService saveContent;
 
-        public AnswersController(ILogger<AnswersController> _logger, IConfiguration _config)
+        public AnswersController(ILogger<AnswersController> _logger, IConfiguration _config, ISaveContentService _saveContent)
         {
             logger = _logger;
             config = _config;
+            saveContent = _saveContent;
         }
 
         [HttpPost]

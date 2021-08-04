@@ -8,8 +8,11 @@ using Microsoft.Extensions.Logging;
 using Microsoft.OpenApi.Models;
 using System;
 using System.Collections.Generic;
+using System.Data.Entity;
 using System.Linq;
 using System.Threading.Tasks;
+using TestApp.Classes;
+using TestApp.Classes.Services;
 
 namespace TestApp
 {
@@ -31,6 +34,8 @@ namespace TestApp
             {
                 c.SwaggerDoc("v1", new OpenApiInfo { Title = "WebApplication4", Version = "v1" });
             });
+
+            services.AddTransient<ISaveContentService, SaveContent>();
 
         }
 
