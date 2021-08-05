@@ -3,7 +3,7 @@ using MimeMapping;
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
-using TestApp.Classes.Services;
+using TestApp.Classes.Interfaces;
 using TestApp.Models;
 using TestApp.Models.Interfaces;
 

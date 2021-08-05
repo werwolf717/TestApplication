@@ -1,7 +1,7 @@
 ﻿using Microsoft.AspNetCore.Http;
 using System.Threading.Tasks;
 
-namespace TestApp.Classes.Services
+namespace TestApp.Classes.Interfaces
 {
     public interface ISaveStorageService
     {

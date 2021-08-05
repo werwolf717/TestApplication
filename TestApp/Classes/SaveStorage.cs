@@ -3,7 +3,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Configuration;
 using System;
 using System.Threading.Tasks;
-using TestApp.Classes.Services;
+using TestApp.Classes.Interfaces;
 
 namespace TestApp.Classes
 {

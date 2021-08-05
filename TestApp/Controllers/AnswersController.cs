@@ -7,7 +7,7 @@ using TestApp.Models;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Configuration;
 using TestApp.Models.Interfaces;
-using TestApp.Classes.Services;
+using TestApp.Classes.Interfaces;
 
 namespace TestApp.Controllers
 {

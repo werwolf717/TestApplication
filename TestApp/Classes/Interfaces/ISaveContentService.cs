@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using TestApp.Models.Interfaces;
 
-namespace TestApp.Classes.Services
+namespace TestApp.Classes.Interfaces
 {
     public interface ISaveContentService
     {
