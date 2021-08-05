@@ -25,7 +25,7 @@ namespace TestApp
             services.AddControllers();
             services.AddSwaggerGen(c =>
             {
-                c.SwaggerDoc("v1", new OpenApiInfo { Title = "WebApplication4", Version = "v1" });
+                c.SwaggerDoc("v1", new OpenApiInfo { Title = "TestApp", Version = "v1" });
             });
 
             services.AddTransient<ISaveContentService, SaveContent>();
