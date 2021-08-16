@@ -17,13 +17,11 @@ namespace TestApp.Controllers
     {
 
         private readonly ILogger<AnswersController> logger;
-        private readonly IConfiguration config;
         private readonly ISaveContentService saveContent;
 
         public AnswersController(ILogger<AnswersController> _logger, IConfiguration _config, ISaveContentService _saveContent)
         {
             logger = _logger;
-            config = _config;
             saveContent = _saveContent;
         }
 
