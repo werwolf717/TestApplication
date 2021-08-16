@@ -25,13 +25,15 @@ namespace UnitAppTests
 
             AnswersController controller = new AnswersController(new Logger<AnswersController>(LoggerFactory.Create(builder =>
             builder.AddConsole())),
-            new ConfigurationBuilder().AddJsonFile("appsettings.json").Build(),
+
             new SaveContent(aswContext, saveStorage));
 
 
             Task result = controller.Events(Guid.NewGuid(), new List<EventModel>());
 
             result.Wait();
+
+            Assert.IsType<Task<IActionResult>>(result);
 
         }
     }
