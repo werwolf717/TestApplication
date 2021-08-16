@@ -33,7 +33,7 @@ namespace TestApp.Classes
             }
             catch(Exception ex)
             {
-                throw new Exception("SQL Error", ex.InnerException);
+                throw new NullReferenceException("SQL Error", ex.InnerException);
             }
         }
 
@@ -49,7 +49,7 @@ namespace TestApp.Classes
             }
             catch(Exception ex)
             {
-                throw new Exception("SQL Error", ex.InnerException);
+                throw new NullReferenceException("SQL Error", ex.InnerException);
             }
         }
     }
