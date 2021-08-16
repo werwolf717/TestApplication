@@ -19,7 +19,7 @@ namespace TestApp.Controllers
         private readonly ILogger<AnswersController> logger;
         private readonly ISaveContentService saveContent;
 
-        public AnswersController(ILogger<AnswersController> _logger, IConfiguration _config, ISaveContentService _saveContent)
+        public AnswersController(ILogger<AnswersController> _logger, ISaveContentService _saveContent)
         {
             logger = _logger;
             saveContent = _saveContent;
