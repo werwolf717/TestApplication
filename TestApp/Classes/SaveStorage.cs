@@ -25,7 +25,7 @@ namespace TestApp.Classes
             }
             catch (Exception ex)
             {
-                throw new NullReferenceException(_file.FileName, ex);
+                throw new ArgumentException(_file.FileName, ex);
             }
         }
     }
