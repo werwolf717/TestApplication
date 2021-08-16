@@ -10,7 +10,7 @@ namespace TestApp.Models.DB
         public Guid AnswerId { get; set; }
         public DateTime Created { get; set; }
         public string Value { get; set; }
-        public IEvent.AnswerEventTypeEnum Type { get; set; }
+        public IEvent.AnswerEventType Type { get; set; }
         public DateTime ClientTime { get; set; }
 
         public AnswerEvent(Guid guid1, Guid guid2, DateTime now, IEvent answer)

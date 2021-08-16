@@ -5,7 +5,7 @@ namespace TestApp.Models.Interfaces
 {
     public interface IEvent
     {
-        enum AnswerEventTypeEnum
+        enum AnswerEventType
         {
             Click,
             Move,
@@ -15,7 +15,7 @@ namespace TestApp.Models.Interfaces
         }
         public string Value { get; set; }
         [Required]
-        public AnswerEventTypeEnum Type { get; set; }
+        public AnswerEventType Type { get; set; }
         [Required]
         public DateTime ClientTime { get; set; }
     }
